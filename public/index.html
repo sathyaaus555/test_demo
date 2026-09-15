@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Registration</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page">
+    <section class="intro">
+      <span class="eyebrow">INTERNATIONAL STUDENT CONFERENCE</span>
+      <h1>Build your future.<br><em>Start here.</em></h1>
+      <p>A tiny application with a big quality-engineering lesson.</p>
+      <div class="lesson">
+        <span>01</span><p>Build it with AI</p>
+        <span>02</span><p>Test what could go wrong</p>
+        <span>03</span><p>Create confidence</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-heading">
+        <span class="icon">✦</span>
+        <div><h2>Student Registration</h2><p>Complete all fields to reserve your place.</p></div>
+      </div>
+
+      <form id="registration-form" novalidate>
+        <label>Full name<input id="name" name="name" placeholder="e.g. Maya Chen"></label>
+        <label>Email address<input id="email" name="email" type="email" placeholder="maya@example.com"></label>
+        <label>Course
+          <select id="course" name="course">
+            <option value="">Choose a course</option>
+            <option>Computer Science</option>
+            <option>Data Science</option>
+            <option>Software Engineering</option>
+            <option>Cybersecurity</option>
+          </select>
+        </label>
+        <button type="submit"><span>Register student</span><span>→</span></button>
+      </form>
+
+      <div id="message" class="message" role="status" aria-live="polite"></div>
+      <div class="trust">Code creates features. <strong>Quality creates confidence.</strong></div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
