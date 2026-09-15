@@ -1,0 +1,13 @@
+{
+  "name": "student-registration-quality-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-assisted student registration demo for a quality engineering keynote",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
