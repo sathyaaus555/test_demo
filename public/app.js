@@ -21,7 +21,7 @@ function showMessage(element, text, type = "") {
 function renderAccounts() {
   accountsContainer.innerHTML = accounts.map((account, index) => `
     <article class="account-card ${index === 0 ? "featured" : ""}">
-      <div class="account-top"><span>${account.name}</span><span class="pill">DEMO</span></div>
+      <div class="account-top"><span>${account.name}</span></div>
       <div class="account-number">Account ${account.id}</div>
       <div class="balance-label">Available balance</div>
       <div class="balance">${money(account.balance)}</div>
@@ -66,7 +66,7 @@ document.querySelector("#logout").addEventListener("click", () => { dashboardVie
 
 transferForm.addEventListener("submit", async event => {
   event.preventDefault();
-  showMessage(transferMessage, "Processing demo transfer...");
+  showMessage(transferMessage, "Processing transfer...");
   try {
     const result = await apiRequest("/api/transfer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fromAccount: fromSelect.value, toAccount: toSelect.value, amount: amountInput.value }) });
     accounts = result.accounts;

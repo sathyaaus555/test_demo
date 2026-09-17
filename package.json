@@ -1,11 +1,11 @@
 {
-  "name": "bank-transfer-conference-demo",
+  "name": "abc-bank-transfer",
   "version": "1.0.0",
   "private": true,
-  "description": "Simple fictional bank transfer application for a university conference demo",
+  "description": "Simple ABC Bank fund transfer application",
   "scripts": {
     "start": "node server.js",
-    "test": "node --test"
+    "test": "node --test test/server.test.js"
   },
   "engines": {
     "node": ">=20"

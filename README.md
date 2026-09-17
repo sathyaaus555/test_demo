@@ -1,6 +1,6 @@
-# Northstar Bank Transfer Demo
+# ABC Bank Transfer Application
 
-A small, dependency-free Node.js application for a university conference demonstration. All users, accounts and balances are fictional.
+A small, dependency-free Node.js bank transfer application.
 
 ## Run locally
 
@@ -16,3 +16,5 @@ Open <http://localhost:3000> and sign in with `demo` / `demo123`.
 ```bash
 npm test
 ```
+
+The insufficient-funds test deliberately exposes the missing balance validation in the application.

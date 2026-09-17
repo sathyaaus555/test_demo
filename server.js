@@ -8,7 +8,7 @@ const publicDir = path.join(__dirname, "public");
 const DEMO_USER = { username: "demo", password: "demo123", name: "Alex Morgan" };
 const initialAccounts = {
   ACC001: { id: "ACC001", name: "Everyday Account", balance: 1000 },
-  ACC002: { id: "ACC002", name: "Savings Account", balance: 500 }
+  PAY001: { id: "PAY001", name: "Beneficiary Account", balance: 500 }
 };
 let accounts = structuredClone(initialAccounts);
 
@@ -65,7 +65,7 @@ function createServer() {
       try {
         const input = await readBody(request);
         if (input.username !== DEMO_USER.username || input.password !== DEMO_USER.password) {
-          return sendJson(response, 401, { message: "Invalid demo username or password." });
+          return sendJson(response, 401, { message: "Invalid username or password." });
         }
         return sendJson(response, 200, { message: "Login successful", user: { name: DEMO_USER.name } });
       } catch (error) {
@@ -87,7 +87,8 @@ function createServer() {
         if (!from || !to) return sendJson(response, 400, { message: "Please select valid accounts." });
         if (from.id === to.id) return sendJson(response, 400, { message: "Source and destination accounts must be different." });
         if (!Number.isFinite(amount) || amount <= 0) return sendJson(response, 400, { message: "Transfer amount must be greater than zero." });
-        if (amount > from.balance) return sendJson(response, 400, { message: "Transfer amount exceeds the available balance." });
+        // Deliberate conference defect: the insufficient-balance check is missing.
+        // The automated test demonstrates why generated code must be verified.
 
         from.balance = Number((from.balance - amount).toFixed(2));
         to.balance = Number((to.balance + amount).toFixed(2));
@@ -107,7 +108,7 @@ function createServer() {
 }
 
 if (require.main === module) {
-  createServer().listen(PORT, () => console.log(`Northstar Bank demo: http://localhost:${PORT}`));
+  createServer().listen(PORT, () => console.log(`ABC Bank: http://localhost:${PORT}`));
 }
 
 module.exports = { createServer, resetAccounts };

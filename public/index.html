@@ -3,26 +3,26 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Northstar Bank Demo</title>
+  <title>ABC Bank</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main class="shell">
     <section id="login-view" class="login-card">
-      <div class="brand"><span class="brand-mark">N</span><div><strong>Northstar Bank</strong><small>Conference Demo</small></div></div>
-      <div class="login-copy"><span class="eyebrow">FICTIONAL BANKING EXPERIENCE</span><h1>Welcome back</h1><p>Sign in to explore a safe, fictional fund-transfer journey.</p></div>
+      <div class="brand"><span class="brand-mark">A</span><div><strong>ABC Bank</strong><small>Online Banking</small></div></div>
+      <div class="login-copy"><span class="eyebrow">SECURE ONLINE BANKING</span><h1>Welcome back</h1><p>Sign in to view your accounts and transfer funds.</p></div>
       <form id="login-form">
         <label for="username">Username<input id="username" value="demo" autocomplete="username" required></label>
         <label for="password">Password<input id="password" type="password" value="demo123" autocomplete="current-password" required></label>
         <button type="submit">Sign in <span>→</span></button>
       </form>
       <div id="login-message" class="message" role="status" aria-live="polite"></div>
-      <p class="demo-note">Demo credentials: <strong>demo / demo123</strong></p>
+      <p class="demo-note">Login details: <strong>demo / demo123</strong></p>
     </section>
 
     <section id="dashboard-view" class="dashboard hidden">
-      <header><div class="brand"><span class="brand-mark">N</span><div><strong>Northstar Bank</strong><small>Fictional Demo</small></div></div><button id="logout" class="text-button">Sign out</button></header>
-      <div class="welcome"><div><span class="eyebrow">PERSONAL BANKING</span><h1>Good day, <span id="customer-name">Alex</span>.</h1><p>Your demo accounts are ready.</p></div><button id="open-transfer" class="primary">Fund Transfer <span>→</span></button></div>
+      <header><div class="brand"><span class="brand-mark">A</span><div><strong>ABC Bank</strong><small>Online Banking</small></div></div><button id="logout" class="text-button">Sign out</button></header>
+      <div class="welcome"><div><span class="eyebrow">PERSONAL BANKING</span><h1>Good day, <span id="customer-name">Alex</span>.</h1><p>Your accounts are ready.</p></div><button id="open-transfer" class="primary">Fund Transfer <span>→</span></button></div>
       <div id="accounts" class="account-grid"></div>
       <section id="transfer-panel" class="transfer-panel hidden">
         <div class="panel-heading"><div><span class="eyebrow">MOVE MONEY</span><h2>Fund Transfer</h2></div><button id="close-transfer" class="close" aria-label="Close transfer form">×</button></div>
@@ -33,7 +33,7 @@
         </form>
         <div id="transfer-message" class="message" role="status" aria-live="polite"></div>
       </section>
-      <footer>Conference demonstration only · All names, accounts and balances are fictional.</footer>
+      <footer>ABC Bank · Simple, secure fund transfers.</footer>
     </section>
   </main>
   <script src="app.js"></script>
