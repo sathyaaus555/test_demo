@@ -3,45 +3,54 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Student Registration</title>
+  <title>Northstar Bank Demo</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="page">
-    <section class="intro">
-      <span class="eyebrow">INTERNATIONAL STUDENT CONFERENCE</span>
-      <h1>Build your future.<br><em>Start here.</em></h1>
-      <p>A tiny application with a big quality-engineering lesson.</p>
-      <div class="lesson">
-        <span>01</span><p>Build it with AI</p>
-        <span>02</span><p>Test what could go wrong</p>
-        <span>03</span><p>Create confidence</p>
+  <main class="shell">
+    <section id="login-view" class="login-card">
+      <div class="brand"><span class="brand-mark">N</span><div><strong>Northstar Bank</strong><small>Conference Demo</small></div></div>
+      <div class="login-copy">
+        <span class="eyebrow">FICTIONAL BANKING EXPERIENCE</span>
+        <h1>Welcome back</h1>
+        <p>Sign in to explore a safe, fictional fund-transfer journey.</p>
       </div>
+      <form id="login-form">
+        <label>Username<input id="username" value="demo" autocomplete="off"></label>
+        <label>Password<input id="password" type="password" value="demo123"></label>
+        <button type="submit">Sign in <span>→</span></button>
+      </form>
+      <div id="login-message" class="message" role="status"></div>
+      <p class="demo-note">Demo credentials: <strong>demo / demo123</strong></p>
     </section>
 
-    <section class="card">
-      <div class="card-heading">
-        <span class="icon">✦</span>
-        <div><h2>Student Registration</h2><p>Complete all fields to reserve your place.</p></div>
+    <section id="dashboard-view" class="dashboard hidden">
+      <header>
+        <div class="brand"><span class="brand-mark">N</span><div><strong>Northstar Bank</strong><small>Fictional Demo</small></div></div>
+        <button id="logout" class="text-button">Sign out</button>
+      </header>
+
+      <div class="welcome">
+        <div><span class="eyebrow">PERSONAL BANKING</span><h1>Good day, <span id="customer-name">Alex</span>.</h1><p>Your demo accounts are ready.</p></div>
+        <button id="open-transfer" class="primary">Transfer funds <span>→</span></button>
       </div>
 
-      <form id="registration-form" novalidate>
-        <label>Full name<input id="name" name="name" placeholder="e.g. Maya Chen"></label>
-        <label>Email address<input id="email" name="email" type="email" placeholder="maya@example.com"></label>
-        <label>Course
-          <select id="course" name="course">
-            <option value="">Choose a course</option>
-            <option>Computer Science</option>
-            <option>Data Science</option>
-            <option>Software Engineering</option>
-            <option>Cybersecurity</option>
-          </select>
-        </label>
-        <button type="submit"><span>Register student</span><span>→</span></button>
-      </form>
+      <div id="accounts" class="account-grid"></div>
 
-      <div id="message" class="message" role="status" aria-live="polite"></div>
-      <div class="trust">Code creates features. <strong>Quality creates confidence.</strong></div>
+      <section id="transfer-panel" class="transfer-panel hidden">
+        <div class="panel-heading"><div><span class="eyebrow">MOVE MONEY</span><h2>Fund Transfer</h2></div><button id="close-transfer" class="close">×</button></div>
+        <form id="transfer-form">
+          <div class="form-grid">
+            <label>From account<select id="from-account"></select></label>
+            <label>To account<select id="to-account"></select></label>
+          </div>
+          <label>Amount (AUD)<input id="amount" type="number" min="0.01" step="0.01" placeholder="500.00"></label>
+          <button type="submit">Transfer now <span>→</span></button>
+        </form>
+        <div id="transfer-message" class="message" role="status" aria-live="polite"></div>
+      </section>
+
+      <footer>Conference demonstration only · All names, accounts and balances are fictional.</footer>
     </section>
   </main>
   <script src="app.js"></script>
