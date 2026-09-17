@@ -1,5 +1,18 @@
-# Student Registration Demo
+# Northstar Bank Transfer Demo
 
-A conference demo showing that writing code is only the beginning—quality creates confidence.
+A small, dependency-free Node.js application for a university conference demonstration. All users, accounts and balances are fictional.
 
-Development work is available on the `testdemo` branch.
+## Run locally
+
+```bash
+npm install
+npm start
+```
+
+Open <http://localhost:3000> and sign in with `demo` / `demo123`.
+
+## Test
+
+```bash
+npm test
+```

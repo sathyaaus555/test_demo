@@ -1,59 +1,50 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { createServer, students } = require("../server");
+const { createServer, resetAccounts } = require("../server");
 
 let server;
 let baseUrl;
 
 test.before(async () => {
-  students.length = 0;
   server = createServer();
   await new Promise(resolve => server.listen(0, resolve));
   baseUrl = `http://127.0.0.1:${server.address().port}`;
 });
-
+test.beforeEach(() => resetAccounts());
 test.after(() => new Promise(resolve => server.close(resolve)));
 
-async function register(payload) {
-  return fetch(`${baseUrl}/api/students`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
+async function transfer(payload) {
+  return fetch(`${baseUrl}/api/transfer`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
 }
 
-test("registers a valid student", async () => {
-  const response = await register({
-    name: "Maya Chen",
-    email: "maya@example.com",
-    course: "Software Engineering"
-  });
+test("logs in with the demo credentials", async () => {
+  const response = await fetch(`${baseUrl}/api/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: "demo", password: "demo123" }) });
+  assert.equal(response.status, 200);
+});
+
+test("starts with the two required fictional balances", async () => {
+  const response = await fetch(`${baseUrl}/api/accounts`);
   const body = await response.json();
-
-  assert.equal(response.status, 201);
-  assert.equal(body.student.email, "maya@example.com");
+  assert.deepEqual(body.accounts.map(({ id, balance }) => ({ id, balance })), [{ id: "ACC001", balance: 1000 }, { id: "ACC002", balance: 500 }]);
 });
 
-test("rejects empty data", async () => {
-  const response = await register({ name: "", email: "", course: "" });
-  assert.equal(response.status, 400);
+test("transfers money and returns updated balances", async () => {
+  const response = await transfer({ fromAccount: "ACC001", toAccount: "ACC002", amount: 250 });
+  const body = await response.json();
+  assert.equal(response.status, 200);
+  assert.equal(body.message, "Transfer Successful");
+  assert.deepEqual(body.accounts.map(({ balance }) => balance), [750, 750]);
 });
 
-test("rejects an invalid email", async () => {
-  const response = await register({
-    name: "Noah",
-    email: "not-an-email",
-    course: "Data Science"
+for (const [name, payload, message] of [
+  ["rejects zero amounts", { fromAccount: "ACC001", toAccount: "ACC002", amount: 0 }, "greater than zero"],
+  ["rejects insufficient funds", { fromAccount: "ACC001", toAccount: "ACC002", amount: 1001 }, "exceeds"],
+  ["rejects matching accounts", { fromAccount: "ACC001", toAccount: "ACC001", amount: 10 }, "must be different"]
+]) {
+  test(name, async () => {
+    const response = await transfer(payload);
+    const body = await response.json();
+    assert.equal(response.status, 400);
+    assert.match(body.message, new RegExp(message, "i"));
   });
-  assert.equal(response.status, 400);
-});
-
-test("rejects a duplicate registration", async () => {
-  const payload = {
-    name: "Maya Chen",
-    email: "maya@example.com",
-    course: "Software Engineering"
-  };
-  const response = await register(payload);
-  assert.equal(response.status, 409);
-});
+}

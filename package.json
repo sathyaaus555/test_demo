@@ -1,8 +1,8 @@
 {
-  "name": "student-registration-quality-demo",
+  "name": "bank-transfer-conference-demo",
   "version": "1.0.0",
   "private": true,
-  "description": "AI-assisted student registration demo for a quality engineering keynote",
+  "description": "Simple fictional bank transfer application for a university conference demo",
   "scripts": {
     "start": "node server.js",
     "test": "node --test"

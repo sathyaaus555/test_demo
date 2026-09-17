@@ -10,46 +10,29 @@
   <main class="shell">
     <section id="login-view" class="login-card">
       <div class="brand"><span class="brand-mark">N</span><div><strong>Northstar Bank</strong><small>Conference Demo</small></div></div>
-      <div class="login-copy">
-        <span class="eyebrow">FICTIONAL BANKING EXPERIENCE</span>
-        <h1>Welcome back</h1>
-        <p>Sign in to explore a safe, fictional fund-transfer journey.</p>
-      </div>
+      <div class="login-copy"><span class="eyebrow">FICTIONAL BANKING EXPERIENCE</span><h1>Welcome back</h1><p>Sign in to explore a safe, fictional fund-transfer journey.</p></div>
       <form id="login-form">
-        <label>Username<input id="username" value="demo" autocomplete="off"></label>
-        <label>Password<input id="password" type="password" value="demo123"></label>
+        <label for="username">Username<input id="username" value="demo" autocomplete="username" required></label>
+        <label for="password">Password<input id="password" type="password" value="demo123" autocomplete="current-password" required></label>
         <button type="submit">Sign in <span>→</span></button>
       </form>
-      <div id="login-message" class="message" role="status"></div>
+      <div id="login-message" class="message" role="status" aria-live="polite"></div>
       <p class="demo-note">Demo credentials: <strong>demo / demo123</strong></p>
     </section>
 
     <section id="dashboard-view" class="dashboard hidden">
-      <header>
-        <div class="brand"><span class="brand-mark">N</span><div><strong>Northstar Bank</strong><small>Fictional Demo</small></div></div>
-        <button id="logout" class="text-button">Sign out</button>
-      </header>
-
-      <div class="welcome">
-        <div><span class="eyebrow">PERSONAL BANKING</span><h1>Good day, <span id="customer-name">Alex</span>.</h1><p>Your demo accounts are ready.</p></div>
-        <button id="open-transfer" class="primary">Transfer funds <span>→</span></button>
-      </div>
-
+      <header><div class="brand"><span class="brand-mark">N</span><div><strong>Northstar Bank</strong><small>Fictional Demo</small></div></div><button id="logout" class="text-button">Sign out</button></header>
+      <div class="welcome"><div><span class="eyebrow">PERSONAL BANKING</span><h1>Good day, <span id="customer-name">Alex</span>.</h1><p>Your demo accounts are ready.</p></div><button id="open-transfer" class="primary">Fund Transfer <span>→</span></button></div>
       <div id="accounts" class="account-grid"></div>
-
       <section id="transfer-panel" class="transfer-panel hidden">
-        <div class="panel-heading"><div><span class="eyebrow">MOVE MONEY</span><h2>Fund Transfer</h2></div><button id="close-transfer" class="close">×</button></div>
+        <div class="panel-heading"><div><span class="eyebrow">MOVE MONEY</span><h2>Fund Transfer</h2></div><button id="close-transfer" class="close" aria-label="Close transfer form">×</button></div>
         <form id="transfer-form">
-          <div class="form-grid">
-            <label>From account<select id="from-account"></select></label>
-            <label>To account<select id="to-account"></select></label>
-          </div>
-          <label>Amount (AUD)<input id="amount" type="number" min="0.01" step="0.01" placeholder="500.00"></label>
+          <div class="form-grid"><label for="from-account">From account<select id="from-account" required></select></label><label for="to-account">To account<select id="to-account" required></select></label></div>
+          <label for="amount">Amount (AUD)<input id="amount" type="number" min="0.01" step="0.01" placeholder="250.00" required></label>
           <button type="submit">Transfer now <span>→</span></button>
         </form>
         <div id="transfer-message" class="message" role="status" aria-live="polite"></div>
       </section>
-
       <footer>Conference demonstration only · All names, accounts and balances are fictional.</footer>
     </section>
   </main>

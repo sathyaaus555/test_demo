@@ -7,13 +7,13 @@ const publicDir = path.join(__dirname, "public");
 
 const DEMO_USER = { username: "demo", password: "demo123", name: "Alex Morgan" };
 const initialAccounts = {
-  everyday: { id: "everyday", name: "Everyday Account", number: "•••• 4821", balance: 10000 },
-  savings: { id: "savings", name: "Savings Account", number: "•••• 7394", balance: 5000 }
+  ACC001: { id: "ACC001", name: "Everyday Account", balance: 1000 },
+  ACC002: { id: "ACC002", name: "Savings Account", balance: 500 }
 };
-let accounts = JSON.parse(JSON.stringify(initialAccounts));
+let accounts = structuredClone(initialAccounts);
 
 function sendJson(response, status, payload) {
-  response.writeHead(status, { "Content-Type": "application/json" });
+  response.writeHead(status, { "Content-Type": "application/json; charset=utf-8" });
   response.end(JSON.stringify(payload));
 }
 
@@ -37,10 +37,10 @@ function accountList() {
 }
 
 function serveStatic(request, response) {
-  const requested = request.url === "/" ? "index.html" : request.url.slice(1);
-  const safePath = path.normalize(requested).replace(/^(\.\.[/\\])+/, "");
-  const filePath = path.join(publicDir, safePath);
-  if (!filePath.startsWith(publicDir)) {
+  const requestPath = new URL(request.url, "http://localhost").pathname;
+  const requested = requestPath === "/" ? "index.html" : requestPath.slice(1);
+  const filePath = path.resolve(publicDir, requested);
+  if (filePath !== publicDir && !filePath.startsWith(`${publicDir}${path.sep}`)) {
     response.writeHead(403);
     return response.end("Forbidden");
   }
@@ -49,11 +49,14 @@ function serveStatic(request, response) {
       response.writeHead(404);
       return response.end("Not found");
     }
-    const extension = path.extname(filePath);
-    const types = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript" };
-    response.writeHead(200, { "Content-Type": types[extension] || "application/octet-stream" });
+    const types = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8" };
+    response.writeHead(200, { "Content-Type": types[path.extname(filePath)] || "application/octet-stream" });
     response.end(data);
   });
+}
+
+function resetAccounts() {
+  accounts = structuredClone(initialAccounts);
 }
 
 function createServer() {
@@ -82,24 +85,20 @@ function createServer() {
         const amount = Number(input.amount);
 
         if (!from || !to) return sendJson(response, 400, { message: "Please select valid accounts." });
-        if (from.id === to.id) return sendJson(response, 400, { message: "Choose a different destination account." });
+        if (from.id === to.id) return sendJson(response, 400, { message: "Source and destination accounts must be different." });
         if (!Number.isFinite(amount) || amount <= 0) return sendJson(response, 400, { message: "Transfer amount must be greater than zero." });
         if (amount > from.balance) return sendJson(response, 400, { message: "Transfer amount exceeds the available balance." });
 
         from.balance = Number((from.balance - amount).toFixed(2));
         to.balance = Number((to.balance + amount).toFixed(2));
-        return sendJson(response, 200, {
-          message: "Transfer Successful",
-          amount,
-          accounts: accountList()
-        });
+        return sendJson(response, 200, { status: "success", message: "Transfer Successful", amount, accounts: accountList() });
       } catch (error) {
         return sendJson(response, 400, { message: error.message });
       }
     }
 
     if (request.method === "POST" && request.url === "/api/reset") {
-      accounts = JSON.parse(JSON.stringify(initialAccounts));
+      resetAccounts();
       return sendJson(response, 200, { accounts: accountList() });
     }
 
@@ -108,9 +107,7 @@ function createServer() {
 }
 
 if (require.main === module) {
-  createServer().listen(PORT, () => {
-    console.log(`Fictional Banking Demo: http://localhost:${PORT}`);
-  });
+  createServer().listen(PORT, () => console.log(`Northstar Bank demo: http://localhost:${PORT}`));
 }
 
-module.exports = { createServer };
+module.exports = { createServer, resetAccounts };
