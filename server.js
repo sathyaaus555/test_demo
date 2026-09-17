@@ -4,23 +4,13 @@ const path = require("node:path");
 
 const PORT = Number(process.env.PORT) || 3000;
 const publicDir = path.join(__dirname, "public");
-const students = [];
 
-function validateStudent(input) {
-  const name = String(input.name || "").trim();
-  const email = String(input.email || "").trim().toLowerCase();
-  const course = String(input.course || "").trim();
-
-  if (!name || !email || !course) {
-    return { error: "Name, email and course are required." };
-  }
-
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return { error: "Please enter a valid email address." };
-  }
-
-  return { student: { name, email, course } };
-}
+const DEMO_USER = { username: "demo", password: "demo123", name: "Alex Morgan" };
+const initialAccounts = {
+  everyday: { id: "everyday", name: "Everyday Account", number: "•••• 4821", balance: 10000 },
+  savings: { id: "savings", name: "Savings Account", number: "•••• 7394", balance: 5000 }
+};
+let accounts = JSON.parse(JSON.stringify(initialAccounts));
 
 function sendJson(response, status, payload) {
   response.writeHead(status, { "Content-Type": "application/json" });
@@ -35,32 +25,30 @@ function readBody(request) {
       if (body.length > 1_000_000) reject(new Error("Request is too large."));
     });
     request.on("end", () => {
-      try {
-        resolve(JSON.parse(body || "{}"));
-      } catch {
-        reject(new Error("Invalid JSON."));
-      }
+      try { resolve(JSON.parse(body || "{}")); }
+      catch { reject(new Error("Invalid JSON.")); }
     });
     request.on("error", reject);
   });
+}
+
+function accountList() {
+  return Object.values(accounts);
 }
 
 function serveStatic(request, response) {
   const requested = request.url === "/" ? "index.html" : request.url.slice(1);
   const safePath = path.normalize(requested).replace(/^(\.\.[/\\])+/, "");
   const filePath = path.join(publicDir, safePath);
-
   if (!filePath.startsWith(publicDir)) {
     response.writeHead(403);
     return response.end("Forbidden");
   }
-
   fs.readFile(filePath, (error, data) => {
     if (error) {
       response.writeHead(404);
       return response.end("Not found");
     }
-
     const extension = path.extname(filePath);
     const types = { ".html": "text/html", ".css": "text/css", ".js": "text/javascript" };
     response.writeHead(200, { "Content-Type": types[extension] || "application/octet-stream" });
@@ -70,25 +58,49 @@ function serveStatic(request, response) {
 
 function createServer() {
   return http.createServer(async (request, response) => {
-    if (request.method === "GET" && request.url === "/api/students") {
-      return sendJson(response, 200, { students });
-    }
-
-    if (request.method === "POST" && request.url === "/api/students") {
+    if (request.method === "POST" && request.url === "/api/login") {
       try {
-        const result = validateStudent(await readBody(request));
-        if (result.error) return sendJson(response, 400, { message: result.error });
-
-        if (students.some(item => item.email === result.student.email)) {
-          return sendJson(response, 409, { message: "This email is already registered." });
+        const input = await readBody(request);
+        if (input.username !== DEMO_USER.username || input.password !== DEMO_USER.password) {
+          return sendJson(response, 401, { message: "Invalid demo username or password." });
         }
-
-        const saved = { id: students.length + 1, ...result.student };
-        students.push(saved);
-        return sendJson(response, 201, { message: "Registration successful!", student: saved });
+        return sendJson(response, 200, { message: "Login successful", user: { name: DEMO_USER.name } });
       } catch (error) {
         return sendJson(response, 400, { message: error.message });
       }
+    }
+
+    if (request.method === "GET" && request.url === "/api/accounts") {
+      return sendJson(response, 200, { accounts: accountList() });
+    }
+
+    if (request.method === "POST" && request.url === "/api/transfer") {
+      try {
+        const input = await readBody(request);
+        const from = accounts[input.fromAccount];
+        const to = accounts[input.toAccount];
+        const amount = Number(input.amount);
+
+        if (!from || !to) return sendJson(response, 400, { message: "Please select valid accounts." });
+        if (from.id === to.id) return sendJson(response, 400, { message: "Choose a different destination account." });
+        if (!Number.isFinite(amount) || amount <= 0) return sendJson(response, 400, { message: "Transfer amount must be greater than zero." });
+        if (amount > from.balance) return sendJson(response, 400, { message: "Transfer amount exceeds the available balance." });
+
+        from.balance = Number((from.balance - amount).toFixed(2));
+        to.balance = Number((to.balance + amount).toFixed(2));
+        return sendJson(response, 200, {
+          message: "Transfer Successful",
+          amount,
+          accounts: accountList()
+        });
+      } catch (error) {
+        return sendJson(response, 400, { message: error.message });
+      }
+    }
+
+    if (request.method === "POST" && request.url === "/api/reset") {
+      accounts = JSON.parse(JSON.stringify(initialAccounts));
+      return sendJson(response, 200, { accounts: accountList() });
     }
 
     return serveStatic(request, response);
@@ -97,8 +109,8 @@ function createServer() {
 
 if (require.main === module) {
   createServer().listen(PORT, () => {
-    console.log(`Student Registration Demo: http://localhost:${PORT}`);
+    console.log(`Fictional Banking Demo: http://localhost:${PORT}`);
   });
 }
 
-module.exports = { createServer, validateStudent, students };
+module.exports = { createServer };
